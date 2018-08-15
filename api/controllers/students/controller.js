@@ -43,7 +43,7 @@ module.exports = {
         }
 
         try {
-            response.locals.connection.query('update into registrations(teacher,student) values("'+teacher+'","'+student+'")', function (error, results, fields) {
+            response.locals.connection.query('update students set suspend = "Y" where student = "' + student + '")', function (error, results, fields) {
                 if(error) throw error;
             });
             response.sendStatus(204);
