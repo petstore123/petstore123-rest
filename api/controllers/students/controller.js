@@ -16,18 +16,28 @@ module.exports = {
             console.log("teachers list contains duplicate");
         }
 
-        const query = '';
+        let query = 'select student from registrations where teacher = "'+ teachers[0] + '"';
         teachers.forEach(function(teacher){
-            const registrations = 'select student from registrations where teacher = "' + teacher + '"';
-            query.concat(registrations, " intersect");
+            if(teacher !== teachers[0]){
+                const condition = ' and student in (select student from registrations where teacher = "' + teacher + '")';
+                query = query.concat(condition);
+            }
         });
-        query.slice(-10); // remove last occurrence of 'intersect'
+        console.log(query);
 
         try {
             response.locals.connection.query(query, function (error, results, fields) {
                 if(error) throw error;
+
+                let students = [];
+                results.forEach(function(student){
+                    students.push(student['student']);
+                });
+                let data = {
+                    "students": students
+                }
+                response.status(200).send(data);
             });
-            response.sendStatus(204);
         }catch(err){
             throw err;
         }
