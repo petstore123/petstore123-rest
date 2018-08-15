@@ -21,7 +21,7 @@ module.exports = {
             const registrations = 'select student from registrations where teacher = "' + teacher + '"';
             query.concat(registrations, " intersect");
         });
-        query.slice(-10) // remove last occurrence of s'intersect'
+        query.slice(-10); // remove last occurrence of s'intersect'
 
         try {
             response.locals.connection.query(query, function (error, results, fields) {
