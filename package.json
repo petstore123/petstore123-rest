@@ -1,0 +1,28 @@
+{
+  "name": "petstore123-rest",
+  "version": "1.0.0",
+  "description": "restful api app",
+  "main": "api/server.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "lodash": "^4.17.10",
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petstore123/petstore123-rest.git"
+  },
+  "author": "CO",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/petstore123/petstore123-rest/issues"
+  },
+  "homepage": "https://github.com/petstore123/petstore123-rest#readme"
+}
