@@ -43,6 +43,14 @@ module.exports = {
         }
     },
     findAllEligibleForNotifications: function(request, response){
+        console.log("request:");
+        console.log(request.body);
+
+        const teacher = request.body['teacher'];
+        const notification = request.body['notification'];
+
+        const pattern = /(@[A-Za-z0-9._]*@[A-Za-z0-9.])\w+/g;
+        const students = notification.match(pattern);
 
     },
     update: function(request, response){
