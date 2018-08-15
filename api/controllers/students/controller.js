@@ -53,11 +53,32 @@ module.exports = {
         let students = notification.match(pattern);
 
         // remove @ prefix
-        students = _.forEach(students, function(student){
-            return student.substr(1);
-        });
+        students = students.map(function(student){ return student.substr(1); });
 
         console.log(students);
+
+        // check if students in notification list is suspended
+        let query = 'select student from students where suspended = "N" and student in (';
+        students.forEach(function(student){
+            const condition = '"' + student + '",';
+            query = query.concat(condition);
+        });
+        // remove last ','
+        query = query.slice(0, -1);
+        query = query.concat (')');
+        console.log(query);
+
+        response.locals.connection.query(query, function (error, results, fields) {
+            if(error) throw error;
+            console.log("students in notification list who are not suspended: " + results);
+        });
+
+        // find all students registered to teacher
+        response.locals.connection.query('select student from registrations left join students using (student) where suspended = "N" and teacher = "' + teacher + '"', function (error, results, fields) {
+            if(error) throw error;
+            console.log("students registered to teacher: " + results);
+        });
+
 
     },
     update: function(request, response){
