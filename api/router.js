@@ -5,6 +5,6 @@ var students = require('./controllers/students/controller.js');
 var router = express.Router();
 
 router.route('/register').post(registrations.create);
-router.route('/commonstudents').post(students.findAll);
+router.route('/commonstudents').get(students.findAll);
 
 module.exports = router;
