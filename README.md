@@ -18,9 +18,19 @@ Teacher-Student is a RESTful API App
 * `npm install`
 * create db table `registrations`
 ```
+create table registrations(
+    teacher varchar(200) not null
+  , student varchar(200) not null
+  , primary key (teacher, student)
+);
 ```
 * create db table `students`
 ```
+create table students(
+    student varchar(200) not null
+  , suspended varchar(1) not null
+  , primary key (student)
+);
 ```
 
 ## Running / Development
