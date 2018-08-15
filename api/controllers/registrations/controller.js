@@ -17,6 +17,9 @@ module.exports = {
 
         try {
             students.forEach(function(student){
+                response.locals.connection.query('insert into students (student) select student from (select "' + student + '") as tmp where not exists (select student from students where student = "' + student + '") limit 1', function (error, results, fields) {
+                    if(error) throw error;
+                });
                 response.locals.connection.query('insert into registrations(teacher,student) values("'+teacher+'","'+student+'")', function (error, results, fields) {
                     if(error) throw error;
                 });
