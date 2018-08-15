@@ -8,6 +8,7 @@ Teacher-Student is a RESTful API App
 
 * Git
 * Node.js (with npm)
+* MySQL
 
 
 ## Installation
@@ -15,6 +16,12 @@ Teacher-Student is a RESTful API App
 * `git clone <repository url>` this repository
 * `cd petstore123-rest`
 * `npm install`
+* create db table `registrations`
+```
+```
+* create db table `students`
+```
+```
 
 ## Running / Development
 

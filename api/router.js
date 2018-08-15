@@ -6,5 +6,6 @@ var router = express.Router();
 
 router.route('/register').post(registrations.create);
 router.route('/commonstudents').get(students.findAll);
+router.route('/suspend').get(students.update);
 
 module.exports = router;
