@@ -49,8 +49,15 @@ module.exports = {
         const teacher = request.body['teacher'];
         const notification = request.body['notification'];
 
-        const pattern = /(@[A-Za-z0-9._]*@[A-Za-z0-9.])\w+/g;
-        const students = notification.match(pattern);
+        const pattern = /(@[A-Za-z0-9._]*@[A-Za-z0-9.]*.[a-zA-z])\w+/g;
+        let students = notification.match(pattern);
+
+        // remove @ prefix
+        students = _.forEach(students, function(student){
+            return student.substr(1);
+        });
+
+        console.log(students);
 
     },
     update: function(request, response){
