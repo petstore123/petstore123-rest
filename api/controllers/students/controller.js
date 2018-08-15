@@ -32,6 +32,9 @@ module.exports = {
             throw err;
         }
     },
+    findAllEligibleForNotifications: function(request, response){
+
+    },
     update: function(request, response){
         console.log("request:");
         console.log(request.body);
