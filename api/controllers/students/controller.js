@@ -31,5 +31,24 @@ module.exports = {
         }catch(err){
             throw err;
         }
+    },
+    update: function(request, response){
+        console.log("request:");
+        console.log(request.body);
+
+        const student = request.body['student'];
+
+        if(_.isEmpty(student)){
+            console.log("at least one one student");
+        }
+
+        try {
+            response.locals.connection.query('update into registrations(teacher,student) values("'+teacher+'","'+student+'")', function (error, results, fields) {
+                if(error) throw error;
+            });
+            response.sendStatus(204);
+        }catch(err){
+            throw err;
+        }
     }
 }
