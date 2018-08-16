@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var studentsDao = require('../../persistence/students/persistence.js');
+var registrationsDao = require('../../persistence/registrations/persistence.js');
 
 module.exports = {
     findAll: function(request, response){
@@ -16,31 +18,12 @@ module.exports = {
             console.log("teachers list contains duplicate");
         }
 
-        let query = 'select student from registrations where teacher = "'+ teachers[0] + '"';
-        teachers.forEach(function(teacher){
-            if(teacher !== teachers[0]){
-                const condition = ' and student in (select student from registrations where teacher = "' + teacher + '")';
-                query = query.concat(condition);
+        studentsDao.findAll(teachers).then(function(students) {
+            let data = {
+                "students": students
             }
-        });
-        console.log(query);
-
-        try {
-            response.locals.connection.query(query, function (error, results, fields) {
-                if(error) throw error;
-
-                let students = [];
-                results.forEach(function(student){
-                    students.push(student['student']);
-                });
-                let data = {
-                    "students": students
-                }
-                response.status(200).send(data);
-            });
-        }catch(err){
-            throw err;
-        }
+            response.status(200).send(data);
+        }).catch((err) => setImmediate(() => { throw err; }));
     },
     findAllEligibleForNotifications: function(request, response){
         console.log("request:");
@@ -55,42 +38,20 @@ module.exports = {
         // remove @ prefix
         students = students.map(function(student){ return student.substr(1); });
 
-        console.log(students);
+        console.log("students in notification: " + students);
 
-        // check if students in notification list is suspended
-        let query = 'select student from students where suspended = "N" and student in (';
-        students.forEach(function(student){
-            const condition = '"' + student + '",';
-            query = query.concat(condition);
-        });
-        // remove last ','
-        query = query.slice(0, -1);
-        query = query.concat (')');
-        console.log(query);
+        studentsDao.findAllNotSuspended(students).then(function(studentsNotSuspended) {
+            console.log("students not suspended: " + studentsNotSuspended);
+            registrationsDao.findAllByTeacher(teacher).then(function(studentsAssociatedWithTeacher) {
+                console.log("students associated with teacher not suspended: " + studentsAssociatedWithTeacher);
 
-        let studentsFromNotifications = [];
-        response.locals.connection.query(query, function (error, results, fields) {
-            if(error) throw error;
-            console.log("students in notification list who are not suspended: " + results);
-            results.forEach(function(student){
-                studentsFromNotifications.push(student['student']);
-            });
-        });
-
-        let studentsAssociatedWithTeacher = [];
-        response.locals.connection.query('select student from registrations left join students using (student) where suspended = "N" and teacher = "' + teacher + '"', function (error, results, fields) {
-            if(error) throw error;
-            console.log("students registered to teacher: " + results);
-            results.forEach(function(student){
-                studentsAssociatedWithTeacher.push(student['student']);
-            });
-        });
-
-        let eligibleStudents = _.uniq(studentsFromNotifications.concat(studentsAssociatedWithTeacher));
-        const data = {
-            "recipients": eligibleStudents
-        }
-        response.status(200).send(data);
+                let eligibleStudents = _.uniq(studentsNotSuspended.concat(studentsAssociatedWithTeacher));
+                const data = {
+                    "recipients": eligibleStudents
+                }
+                response.status(200).send(data);
+            }).catch((err) => setImmediate(() => { throw err; }));
+        }).catch((err) => setImmediate(() => { throw err; }));
     },
     update: function(request, response){
         console.log("request:");
@@ -102,13 +63,8 @@ module.exports = {
             console.log("at least one one student");
         }
 
-        try {
-            response.locals.connection.query('update students set suspended = "Y" where student = "' + student + '"', function (error, results, fields) {
-                if(error) throw error;
-            });
-            response.sendStatus(204);
-        }catch(err){
-            throw err;
-        }
+        studentsDao.update(student).then(function() {
+            response.sendStatus(200);
+        }).catch((err) => setImmediate(() => { throw err; }));
     }
 }

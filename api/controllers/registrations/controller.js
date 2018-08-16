@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var registrationsDao = require('../../persistence/registrations/persistence.js');
+var studentsDao = require('../../persistence/students/persistence.js');
 
 module.exports = {
     create: function(request, response){
@@ -17,12 +19,8 @@ module.exports = {
 
         try {
             students.forEach(function(student){
-                response.locals.connection.query('insert into students (student, suspended) select * from (select "' + student + '", "N") as tmp where not exists (select student, suspended from students where student = "' + student + '") limit 1', function (error, results, fields) {
-                    if(error) throw error;
-                });
-                response.locals.connection.query('insert into registrations(teacher,student) values("'+teacher+'","'+student+'")', function (error, results, fields) {
-                    if(error) throw error;
-                });
+                studentsDao.create(student);
+                registrationsDao.create(teacher, student);
             });
             response.sendStatus(204);
         }catch(err){

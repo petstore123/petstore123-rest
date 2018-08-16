@@ -16,6 +16,10 @@ Teacher-Student is a RESTful API App
 * `git clone <repository url>` this repository
 * `cd petstore123-rest`
 * `npm install`
+* create database `petstore123`
+```
+create database petstore123
+```
 * create db table `registrations`
 ```
 create table registrations(
