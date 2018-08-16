@@ -68,18 +68,29 @@ module.exports = {
         query = query.concat (')');
         console.log(query);
 
+        let studentsFromNotifications = [];
         response.locals.connection.query(query, function (error, results, fields) {
             if(error) throw error;
             console.log("students in notification list who are not suspended: " + results);
+            results.forEach(function(student){
+                studentsFromNotifications.push(student['student']);
+            });
         });
 
-        // find all students registered to teacher
+        let studentsAssociatedWithTeacher = [];
         response.locals.connection.query('select student from registrations left join students using (student) where suspended = "N" and teacher = "' + teacher + '"', function (error, results, fields) {
             if(error) throw error;
             console.log("students registered to teacher: " + results);
+            results.forEach(function(student){
+                studentsAssociatedWithTeacher.push(student['student']);
+            });
         });
 
-
+        let eligibleStudents = _.uniq(studentsFromNotifications.concat(studentsAssociatedWithTeacher));
+        const data = {
+            "recipients": eligibleStudents
+        }
+        response.status(200).send(data);
     },
     update: function(request, response){
         console.log("request:");
