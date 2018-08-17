@@ -1,9 +1,10 @@
 var _ = require('lodash');
 var studentsDao = require('../../persistence/students/persistence.js');
 var registrationsDao = require('../../persistence/registrations/persistence.js');
+const boom = require('boom');
 
 module.exports = {
-    findAll: function(request, response){
+    findAll: function(request, response, next){
         console.log("request:");
         console.log(request.body);
         console.log("query:");
@@ -12,10 +13,15 @@ module.exports = {
         const teachers = request.query['teacher'];
 
         if(!(_.size(teachers) >= 1)){
-            console.log("at least one teacher");
+            return next(boom.badRequest('teacher is empty or not present'));
         }
-        if(_.uniq(teachers).length !== _.size(teachers)){
-            console.log("teachers list contains duplicate");
+        teachers.map(function(teacher){
+            if(_.isEmpty(teacher)){
+                return next(boom.badRequest('one or more teacher is empty'));
+            }
+        });
+        if(_.uniq(teachers.map(teacher => teacher.toLowerCase())).length !== _.size(teachers.map(teacher => teacher.toLowerCase()))){
+            return next(boom.badRequest('teacher list has duplicates'));
         }
 
         studentsDao.findAll(teachers).then(function(students) {
@@ -39,7 +45,7 @@ module.exports = {
         students = students.map(function(student){ return student.substr(1); });
 
         console.log("students in notification: " + students);
-
+        // TODO students not registered in students are not returned
         studentsDao.findAllNotSuspended(students).then(function(studentsNotSuspended) {
             console.log("students not suspended: " + studentsNotSuspended);
             registrationsDao.findAllByTeacher(teacher).then(function(studentsAssociatedWithTeacher) {
@@ -63,8 +69,7 @@ module.exports = {
             console.log("at least one one student");
         }
 
-        studentsDao.update(student).then(function() {
-            response.sendStatus(200);
-        }).catch((err) => setImmediate(() => { throw err; }));
+        studentsDao.update(student);
+        response.sendStatus(200);
     }
 }

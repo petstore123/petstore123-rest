@@ -1,20 +1,29 @@
 var _ = require('lodash');
 var registrationsDao = require('../../persistence/registrations/persistence.js');
 var studentsDao = require('../../persistence/students/persistence.js');
+const boom = require('boom');
 
 module.exports = {
-    create: function(request, response){
+    create: function(request, response, next){
         console.log("request:");
         console.log(request.body);
 
         const teacher = request.body['teacher'];
         const students = request.body['students'];
 
-        if(_.isEmpty(teacher) || !(_.size(students) >= 1)){
-            console.log("at least one teacher and one student");
+        if(_.isEmpty(teacher)){
+            return next(boom.badRequest('teacher is empty or not present'));
         }
-        if(_.uniq(students).length !== _.size(students)){
-            console.log("students list contains duplicate");
+        if((_.size(students) < 1)){
+            return next(boom.badRequest('student list is empty or not present'));
+        }
+        students.map(function(student){
+            if(_.isEmpty(student)){
+                return next(boom.badRequest('one or more student is empty'));
+            }
+        });
+        if(_.uniq(students.map(student => student.toLowerCase())).length !== _.size(students.map(student => student.toLowerCase()))){
+            return next(boom.badRequest('student list has duplicates'));
         }
 
         try {
