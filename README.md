@@ -40,3 +40,9 @@ create table students(
 ## Running
 
 * `npm run start`, API will start on http://0.0.0.0:3000/api/{resources}
+
+## Docker
+
+* To build a container `docker build -t petstore123/petstore123-rest .`
+* To run the container `docker run -p 3000:3000 -d petstore123/petstore123-rest`
+* To enter the container `docker ps`, `docker exec -it <container id> /bin/bash`
