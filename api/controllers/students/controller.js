@@ -59,7 +59,7 @@ module.exports = {
             }).catch((err) => setImmediate(() => { throw err; }));
         }).catch((err) => setImmediate(() => { throw err; }));
     },
-    update: function(request, response){
+    update: function(request, response, next){
         console.log("request:");
         console.log(request.body);
 
@@ -69,7 +69,14 @@ module.exports = {
             console.log("at least one one student");
         }
 
-        studentsDao.update(student);
-        response.sendStatus(200);
+        studentsDao.findOne(student).then(function(students){
+            if(!students){
+                return next(boom.badRequest('student not found'));
+            }
+
+            studentsDao.update(student).then(function(){
+                response.sendStatus(200);
+            });
+        });
     }
 }

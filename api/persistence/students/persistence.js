@@ -18,9 +18,31 @@ module.exports = {
             let query = 'update students set suspended = "Y" where student = ?';
             let params = [student];
 
+            database.query(query, params, function (err, result, fields) {
+                if (err) {
+                    return reject(err);
+                }
+                if(result.changedRows > 0){
+                    resolve(true);
+                }else{
+                    resolve(false);
+                }
+            });
+        });
+    },
+    findOne: function(student) {
+        return new Promise(function(resolve, reject) {
+            let query = 'select * from students where student = ? limit 1';
+            let params = [student];
+
             database.query(query, params, function (err, rows, fields) {
                 if (err) {
                     return reject(err);
+                }
+                if (rows.length > 0){
+                    resolve(rows[0]['student']);
+                }else{
+                    resolve(null);
                 }
             });
         });
