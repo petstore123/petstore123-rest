@@ -5,7 +5,7 @@ const students = require('./controllers/students/controller.js');
 const router = express.Router();
 
 router.route('/register').post(registrations.create);
-router.route('/commonstudents').get(students.findAll);
+router.route('/commonstudents').get(students.findAllByTeacher);
 router.route('/suspend').post(students.update);
 router.route('/retrievefornotifications').post(students.findAllEligibleForNotifications);
 

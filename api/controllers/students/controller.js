@@ -4,7 +4,7 @@ const registrationsDao = require('../../persistence/registrations/persistence.js
 const boom = require('boom');
 
 module.exports = {
-    findAll: function(request, response, next){
+    findAllByTeacher: function(request, response, next){
         console.log("request:");
         console.log(request.body);
         console.log("query:");
@@ -12,24 +12,32 @@ module.exports = {
 
         const teachers = request.query['teacher'];
 
-        if(!(_.size(teachers) >= 1)){
-            return next(boom.badRequest('teacher is empty or not present'));
-        }
-        teachers.map(function(teacher){
-            if(_.isEmpty(teacher)){
+        if(teachers instanceof Array){
+            const teacher = teachers.some(teacher => _.isEmpty(teacher));
+            if(teacher){
                 return next(boom.badRequest('one or more teacher is empty'));
             }
-        });
-        if(_.uniq(teachers.map(teacher => teacher.toLowerCase())).length !== _.size(teachers.map(teacher => teacher.toLowerCase()))){
-            return next(boom.badRequest('teacher list has duplicates'));
+        }else{
+            if(_.isEmpty(teachers)){
+                return next(boom.badRequest('teacher is empty'));
+            }
         }
 
-        studentsDao.findAll(teachers).then(function(students) {
-            let data = {
-                "students": students
-            }
-            response.status(200).send(data);
-        }).catch((err) => setImmediate(() => { throw err; }));
+        if(teachers instanceof Array){
+            studentsDao.findAllByCommonTeachers(teachers).then(function(students) {
+                let data = {
+                    "students": students
+                }
+                response.status(200).send(data);
+            }).catch((err) => setImmediate(() => { throw err; }));
+        }else{
+            studentsDao.findAllByTeacher(teachers).then(function(students) {
+                let data = {
+                    "students": students
+                }
+                response.status(200).send(data);
+            }).catch((err) => setImmediate(() => { throw err; }));
+        }
     },
     findAllEligibleForNotifications: function(request, response){
         console.log("request:");

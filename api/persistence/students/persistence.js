@@ -47,14 +47,13 @@ module.exports = {
             });
         });
     },
-    findAll: function(teachers) {
+    findAllByCommonTeachers: function(teachers) {
         return new Promise(function(resolve, reject) {
             let query = 'select student from registrations where teacher = "'+ teachers[0] + '"';
+
             teachers.forEach(function(teacher){
-                if(teacher !== teachers[0]){
-                    const condition = ' and student in (select student from registrations where teacher = "' + teacher + '")';
-                    query = query.concat(condition);
-                }
+                const condition = ' and student in (select student from registrations where teacher = "' + teacher + '")';
+                query = query.concat(condition);
             });
 
             database.query(query, function (err, rows, fields) {
@@ -62,9 +61,30 @@ module.exports = {
                     return reject(err);
                 }
                 let students = [];
-                rows.forEach(function(student){
-                    students.push(student['student']);
-                });
+                if (rows.length > 0){
+                    rows.forEach(function(student){
+                        students.push(student['student']);
+                    });
+                }
+                resolve(students);
+            });
+        });
+    },
+    findAllByTeacher: function(teacher) {
+        return new Promise(function(resolve, reject) {
+            let query = 'select student from registrations where teacher = ?';
+            let params = [teacher];
+
+            database.query(query, params, function (err, rows, fields) {
+                if (err) {
+                    return reject(err);
+                }
+                let students = [];
+                if (rows.length > 0){
+                    rows.forEach(function(student){
+                        students.push(student['student']);
+                    });
+                }
                 resolve(students);
             });
         });
