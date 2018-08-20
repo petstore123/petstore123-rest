@@ -51,9 +51,8 @@ module.exports = {
 
         // remove @ prefix
         students = students.map(function(student){ return student.substr(1); });
-
         console.log("students in notification: " + students);
-        // TODO students not registered in students are not returned
+
         studentsDao.findAllNotSuspended(students).then(function(studentsNotSuspended) {
             console.log("students not suspended: " + studentsNotSuspended);
             registrationsDao.findAllByTeacher(teacher).then(function(studentsAssociatedWithTeacher) {
