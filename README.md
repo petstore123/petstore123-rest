@@ -9,6 +9,7 @@ Teacher-Student is a RESTful API App
 * Git
 * Node.js (with npm)
 * MySQL
+* [Optional] Docker
 
 
 ## Installation
@@ -18,7 +19,7 @@ Teacher-Student is a RESTful API App
 * `npm install`
 * create database `petstore123`
 ```
-create database petstore123
+create database petstore123;
 ```
 * create db table `registrations`
 ```
