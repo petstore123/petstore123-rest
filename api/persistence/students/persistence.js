@@ -3,7 +3,7 @@ const database = require('../../database.js');
 module.exports = {
     create: function(student) {
         return new Promise(function(resolve, reject) {
-            let query = 'insert into students (student, suspended) select * from (select ?, "N") as tmp where not exists (select student, suspended from students where student = ?) limit 1';
+            let query = 'insert ignore into students (student, suspended) select * from (select ?, "N") as tmp where not exists (select student, suspended from students where student = ?) limit 1';
             let params = [student, student];
 
             database.query(query, params, function (err, rows, fields) {
@@ -15,7 +15,7 @@ module.exports = {
     },
     update: function(student) {
         return new Promise(function(resolve, reject) {
-            let query = 'update students set suspended = "Y" where student = ?';
+            let query = 'update students set suspended = "Y" where student = ? and suspended <> "Y"';
             let params = [student];
 
             database.query(query, params, function (err, result, fields) {

@@ -3,7 +3,7 @@ const database = require('../../database.js');
 module.exports = {
     create: function(teacher, student) {
         return new Promise(function(resolve, reject) {
-            let query = 'insert into registrations(teacher,student) values(?, ?)';
+            let query = 'insert ignore into registrations(teacher,student) values(?, ?)';
             let params = [teacher, student];
 
             database.query(query, params, function (err, rows, fields) {
