@@ -39,12 +39,19 @@ module.exports = {
             }).catch((err) => setImmediate(() => { throw err; }));
         }
     },
-    findAllEligibleForNotifications: function(request, response){
+    findAllEligibleForNotifications: function(request, response, next){
         console.log("request:");
         console.log(request.body);
 
         const teacher = request.body['teacher'];
         const notification = request.body['notification'];
+
+        if(_.isEmpty(teacher)){
+            return next(boom.badRequest('missing teacher'));
+        }
+        if(_.isEmpty(notification)){
+            return next(boom.badRequest('missing notification'));
+        }
 
         const pattern = /(@[A-Za-z0-9._]*@[A-Za-z0-9.]*.[a-zA-z])\w+/g;
         let students = notification.match(pattern);
@@ -73,7 +80,7 @@ module.exports = {
         const student = request.body['student'];
 
         if(_.isEmpty(student)){
-            console.log("at least one one student");
+            return next(boom.badRequest('missing student'));
         }
 
         studentsDao.findOne(student).then(function(students){

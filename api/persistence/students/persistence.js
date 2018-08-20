@@ -100,7 +100,7 @@ module.exports = {
             // remove last ','
             query = query.slice(0, -1);
             query = query.concat (')');
-            console.log("query: " + query);
+
             database.query(query, function (err, rows, fields) {
                 if (err) {
                     return reject(err);
