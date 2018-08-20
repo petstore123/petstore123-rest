@@ -1,4 +1,8 @@
 const express = require('express');
+
+const HOST = '0.0.0.0';
+const PORT = 3000;
+
 const app = express();
 app.use(express.json());
 
@@ -9,6 +13,6 @@ app.use((err, req, res, next) => {
     return res.status(err.output.statusCode).json(err.output.payload);
 });
 
-app.listen(3000, function () {
-    console.log('Dev app listening on port 3000!');
+app.listen(PORT, HOST, function () {
+    console.log('App listening on port ' + PORT);
 });

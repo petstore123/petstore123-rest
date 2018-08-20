@@ -37,6 +37,6 @@ create table students(
 );
 ```
 
-## Running / Development
+## Running
 
-* `npm run start`
+* `npm run start`, API will start on http://0.0.0.0:3000/api/{resources}
