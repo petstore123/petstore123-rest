@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var registrationsDao = require('../../persistence/registrations/persistence.js');
-var studentsDao = require('../../persistence/students/persistence.js');
+const _ = require('lodash');
+const registrationsDao = require('../../persistence/registrations/persistence.js');
+const studentsDao = require('../../persistence/students/persistence.js');
 const boom = require('boom');
 
 module.exports = {
