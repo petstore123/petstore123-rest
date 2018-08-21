@@ -21,9 +21,17 @@ Teacher-Student is a RESTful API App
 ```
 create database petstore123;
 ```
-* update `.env` with mysql user, password, host, port, and database
+* create `.env` in application root with mysql user, password, host, port, and database
+```
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=abcd1234
+DB_DATABASE=petstore123
+```
 * create db table `registrations`
 ```
+use petstore123;
 create table registrations(
     teacher varchar(200) not null
   , student varchar(200) not null
@@ -32,6 +40,7 @@ create table registrations(
 ```
 * create db table `students`
 ```
+use petstore123;
 create table students(
     student varchar(200) not null
   , suspended varchar(1) not null
