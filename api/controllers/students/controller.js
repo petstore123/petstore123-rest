@@ -89,7 +89,7 @@ module.exports = {
             }
 
             studentsDao.update(student).then(function(){
-                response.sendStatus(200);
+                response.sendStatus(204);
             });
         });
     }
