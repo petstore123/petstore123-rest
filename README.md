@@ -21,7 +21,7 @@ Teacher-Student is a RESTful API App
 ```
 create database petstore123;
 ```
-* update `api/database.js` with mysql user, password
+* update `.env` with mysql user, password, host, port, and database
 * create db table `registrations`
 ```
 create table registrations(
